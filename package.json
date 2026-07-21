@@ -11,7 +11,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "seed:neon": "node scripts/seed-neon.js"
+    "seed:neon": "node scripts/seed-neon.js",
+    "images:webp": "node scripts/convert-product-images-to-webp.js"
   },
   "browserslist": {
     "production": [
@@ -24,5 +25,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "sharp": "^0.35.3"
   }
 }

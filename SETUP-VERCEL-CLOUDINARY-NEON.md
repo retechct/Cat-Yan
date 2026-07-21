@@ -59,9 +59,12 @@ node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 Ejecuta:
 
 ```powershell
+npm.cmd run images:webp
 npm.cmd run seed:neon
 npm.cmd run build
 ```
+
+`images:webp` convierte las imagenes locales de productos a WebP.
 
 `seed:neon` sube a Neon el catalogo base que esta en `src/data/productos.js`.
 

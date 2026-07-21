@@ -17,7 +17,7 @@ import {
 import './styles/global.css';
 import './App.css';
 
-const DATA_VERSION = 'v3-productos-reales';
+const DATA_VERSION = 'v4-productos-webp';
 const PRODUCT_STORAGE_KEY = `beaulyx-products-${DATA_VERSION}`;
 const CATEGORY_STORAGE_KEY = `beaulyx-categories-${DATA_VERSION}`;
 const CONSULTA_STORAGE_KEY = `beaulyx-consulta-${DATA_VERSION}`;
@@ -28,6 +28,9 @@ const LEGACY_STORAGE_KEYS = [
   'beaulyx-products-v2',
   'beaulyx-categories-v2',
   'beaulyx-consulta-v2',
+  'beaulyx-products-v3-productos-reales',
+  'beaulyx-categories-v3-productos-reales',
+  'beaulyx-consulta-v3-productos-reales',
 ];
 const legacySegments = ['Mujer', 'Hombre', 'Unisex'];
 

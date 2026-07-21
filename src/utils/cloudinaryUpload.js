@@ -41,5 +41,5 @@ export async function uploadToCloudinary(dataUrl, token) {
     throw new Error(uploadPayload.error?.message || 'No se pudo subir la imagen');
   }
 
-  return uploadPayload.secure_url;
+  return uploadPayload.secure_url.replace('/image/upload/', '/image/upload/f_webp,q_auto/');
 }

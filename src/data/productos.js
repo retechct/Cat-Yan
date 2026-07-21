@@ -1,7 +1,7 @@
 const imagenesProducto = (slug) => [
-  `/assets/productos/${slug}/tarjeta-cuadrada.png`,
-  `/assets/productos/${slug}/catalogo-limpio.png`,
-  `/assets/productos/${slug}/premium-portada.png`,
+  `/assets/productos/${slug}/tarjeta-cuadrada.webp`,
+  `/assets/productos/${slug}/catalogo-limpio.webp`,
+  `/assets/productos/${slug}/premium-portada.webp`,
 ];
 
 const productos = [
@@ -127,9 +127,9 @@ const productos = [
     notas: ["Locion", "Hidratante", "Perfumada"],
     color: "#8c293b",
     imagenes: [
-      "/assets/productos/temptation-mystic/tarjeta-cuadrada-sin-circulo.png",
-      "/assets/productos/temptation-mystic/catalogo-limpio-sin-circulo.png",
-      "/assets/productos/temptation-mystic/premium-portada-sin-circulo.png",
+      "/assets/productos/temptation-mystic/tarjeta-cuadrada-sin-circulo.webp",
+      "/assets/productos/temptation-mystic/catalogo-limpio-sin-circulo.webp",
+      "/assets/productos/temptation-mystic/premium-portada-sin-circulo.webp",
     ],
   },
   {
