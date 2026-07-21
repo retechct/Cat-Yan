@@ -1,0 +1,248 @@
+.consulta-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 65;
+  pointer-events: none;
+}
+
+.consulta-layer.is-open {
+  pointer-events: auto;
+}
+
+.consulta-scrim {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  padding: 0;
+  color: transparent;
+  background: rgba(23, 16, 15, 0);
+  transition: background 180ms ease;
+}
+
+.consulta-layer.is-open .consulta-scrim {
+  background: rgba(23, 16, 15, 0.36);
+}
+
+.consulta-drawer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: min(430px, 100%);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(102%);
+  border-left: 1px solid rgba(33, 23, 22, 0.1);
+  background: #fffdf8;
+  box-shadow: -22px 0 50px rgba(33, 23, 22, 0.16);
+  transition: transform 220ms ease;
+}
+
+.consulta-layer.is-open .consulta-drawer {
+  transform: translateX(0);
+}
+
+.consulta-drawer header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 24px;
+  border-bottom: 1px solid var(--line);
+}
+
+.consulta-drawer header p {
+  margin: 0 0 4px;
+  color: var(--rose);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.consulta-drawer h2,
+.consulta-empty h3 {
+  margin: 0;
+  font-family: var(--display);
+  font-size: 34px;
+  line-height: 1;
+}
+
+.consulta-drawer header button,
+.consulta-clear,
+.consulta-remove {
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  color: var(--ink);
+  background: transparent;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.consulta-drawer header button {
+  min-height: 34px;
+  padding: 0 12px;
+}
+
+.consulta-list {
+  flex: 1;
+  overflow: auto;
+  padding: 14px 18px;
+}
+
+.consulta-list article {
+  display: grid;
+  grid-template-columns: 62px 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(33, 23, 22, 0.08);
+}
+
+.consulta-thumb {
+  width: 62px;
+  height: 62px;
+  display: grid;
+  place-items: center;
+  border-radius: 6px;
+  background: #f5f1eb;
+}
+
+.consulta-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.consulta-thumb span {
+  width: 34px;
+  height: 46px;
+  border-radius: 14px 14px 18px 18px;
+}
+
+.consulta-info {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.consulta-info strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.consulta-info span,
+.consulta-info small {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.consulta-qty {
+  display: grid;
+  grid-template-columns: 28px 30px 28px;
+  min-height: 32px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.consulta-qty button {
+  border: 0;
+  background: white;
+}
+
+.consulta-qty button:disabled {
+  opacity: 0.36;
+  cursor: not-allowed;
+}
+
+.consulta-qty output {
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.consulta-remove {
+  grid-column: 2 / -1;
+  justify-self: start;
+  min-height: 28px;
+  padding: 0 9px;
+  color: #963f3f;
+}
+
+.consulta-drawer footer {
+  display: grid;
+  gap: 12px;
+  padding: 20px 24px 24px;
+  border-top: 1px solid var(--line);
+  background: #fffaf2;
+}
+
+.consulta-drawer footer div {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.consulta-drawer footer span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.consulta-drawer footer p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.consulta-whatsapp {
+  min-height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  color: white;
+  background: #128c55;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.consulta-clear {
+  min-height: 38px;
+}
+
+.consulta-empty {
+  display: grid;
+  place-content: center;
+  gap: 10px;
+  min-height: 320px;
+  padding: 24px;
+  text-align: center;
+}
+
+.consulta-empty p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+@media (max-width: 520px) {
+  .consulta-list article {
+    grid-template-columns: 54px 1fr;
+  }
+
+  .consulta-qty {
+    grid-column: 2;
+    width: 86px;
+  }
+
+  .consulta-remove {
+    grid-column: 2;
+  }
+}
