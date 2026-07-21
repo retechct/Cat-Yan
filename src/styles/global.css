@@ -61,3 +61,9 @@ button {
 ::selection {
   background: rgba(183, 110, 121, 0.22);
 }
+
+@media (max-width: 620px) {
+  html {
+    scroll-padding-top: 118px;
+  }
+}
