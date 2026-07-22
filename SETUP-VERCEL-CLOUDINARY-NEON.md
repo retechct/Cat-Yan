@@ -42,8 +42,10 @@ node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 
 - La pagina publica lee el catalogo desde Neon si `DATABASE_URL` existe.
 - El dashboard en Vercel pide `ADMIN_PASSWORD`.
-- Al guardar cambios desde el dashboard, el catalogo completo se guarda en Neon.
+- Al guardar cambios desde el dashboard, el catalogo completo se valida y se guarda en Neon.
 - Al subir fotos desde el dashboard con sesion iniciada, las imagenes se suben a Cloudinary.
+- Si Cloudinary falla, el dashboard no guarda imagenes temporales en Neon.
+- Si Neon no responde, el dashboard no queda habilitado como si el guardado estuviera listo.
 - En local, si no hay Vercel Functions activas, el dashboard sigue funcionando con `localStorage`.
 
 ## 4. Archivos importantes
@@ -60,11 +62,14 @@ Ejecuta:
 
 ```powershell
 npm.cmd run images:webp
+npm.cmd run validate:catalog
 npm.cmd run seed:neon
 npm.cmd run build
 ```
 
 `images:webp` convierte las imagenes locales de productos a WebP.
+
+`validate:catalog` revisa que el catalogo base cumpla las reglas de seguridad antes de subirlo.
 
 `seed:neon` sube a Neon el catalogo base que esta en `src/data/productos.js`.
 

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './AdminLogin.css';
 
-export default function AdminLogin({ onBack, onLogin }) {
+export default function AdminLogin({ notice, onBack, onLogin }) {
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
@@ -26,6 +26,7 @@ export default function AdminLogin({ onBack, onLogin }) {
         <img src="/assets/beaulyx-logo.jpg" alt="" />
         <p>Dashboard privado</p>
         <h1>Acceso al catalogo</h1>
+        {notice && <span role="status">{notice}</span>}
         <form onSubmit={handleSubmit}>
           <label>
             Clave administrativa

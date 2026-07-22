@@ -40,6 +40,10 @@ function productImages(product) {
   return product.imagen ? [product.imagen] : [];
 }
 
+function hasTemporaryImages(product) {
+  return productImages(product).some((image) => String(image).startsWith('data:'));
+}
+
 function productToForm(product, categorias) {
   const imagenes = productImages(product);
   return {
@@ -170,26 +174,18 @@ export default function AdminPanel({
 
     setUploading(true);
     try {
-      let uploadedToCloud = false;
       const optimized = await Promise.all(files.slice(0, 6).map(async (file) => {
         const localImage = await optimizeImage(file);
         if (!adminToken) return localImage;
-
-        try {
-          const cloudImage = await uploadToCloudinary(localImage, adminToken);
-          uploadedToCloud = true;
-          return cloudImage;
-        } catch {
-          return localImage;
-        }
+        return uploadToCloudinary(localImage, adminToken);
       }));
       setForm((current) => {
         const imagenes = [...productImages(current), ...optimized].slice(0, 6);
         return { ...current, imagenes, imagen: imagenes[0] || '' };
       });
-      notify(uploadedToCloud ? 'Imagenes subidas a Cloudinary.' : 'Imagenes preparadas correctamente.');
-    } catch {
-      window.alert('No se pudo procesar una imagen. Prueba con otra.');
+      notify(adminToken ? 'Imagenes subidas a Cloudinary.' : 'Imagenes preparadas solo para esta sesion local.');
+    } catch (error) {
+      window.alert(error.message || 'No se pudo subir una imagen. Revisa Cloudinary e intenta de nuevo.');
     } finally {
       setUploading(false);
       event.target.value = '';
@@ -206,6 +202,11 @@ export default function AdminPanel({
   const handleSubmit = (event) => {
     event.preventDefault();
     const product = normalizeForm(form);
+    if (adminToken && hasTemporaryImages(product)) {
+      window.alert('Hay imagenes temporales sin subir a Cloudinary. Vuelve a subirlas antes de guardar.');
+      return;
+    }
+
     if (editingId === 'new') {
       onAddProduct(product);
       notify('Producto publicado.');
@@ -363,7 +364,7 @@ export default function AdminPanel({
                 <label className="wide">Descripcion<textarea name="descripcion" value={form.descripcion} onChange={handleChange} required /></label>
                 <label className="wide">Notas o detalles<input name="notas" value={form.notas} onChange={handleChange} placeholder="Rosa, vainilla, ambar" required /></label>
                 <div className="admin-toggles wide"><label><input name="activo" type="checkbox" checked={form.activo} onChange={handleChange} /> Visible en catalogo</label><label><input name="destacado" type="checkbox" checked={form.destacado} onChange={handleChange} /> Producto destacado</label></div>
-                <button className="admin-submit wide" type="submit">{editingId === 'new' ? 'Publicar producto' : 'Guardar cambios'}</button>
+                <button className="admin-submit wide" type="submit" disabled={uploading}>{editingId === 'new' ? 'Publicar producto' : 'Guardar cambios'}</button>
               </div>
             </form>
           )}

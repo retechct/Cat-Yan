@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import ProductCard from './components/ProductCard';
@@ -151,8 +151,29 @@ export default function App() {
   const [consultaOpen, setConsultaOpen] = useState(false);
   const [toast, setToast] = useState('');
   const [adminToken, setAdminToken] = useState(loadAdminToken);
-  const [remoteBootstrapped, setRemoteBootstrapped] = useState(false);
+  const [remoteChecked, setRemoteChecked] = useState(false);
+  const [remoteSaveEnabled, setRemoteSaveEnabled] = useState(false);
+  const [adminDirtyVersion, setAdminDirtyVersion] = useState(0);
   const saveTimer = useRef(null);
+
+  const notify = useCallback((text) => {
+    setToast(text);
+    window.setTimeout(() => setToast(''), 2400);
+  }, []);
+
+  const applyRemoteCatalog = useCallback((catalog) => {
+    if (!catalog) return;
+    if (Array.isArray(catalog.productos) && catalog.productos.length) {
+      setProductos(catalog.productos.map(normalizeProduct));
+    }
+    if (Array.isArray(catalog.categorias) && catalog.categorias.length) {
+      setCategorias(normalizeCategories(catalog.categorias));
+    }
+  }, []);
+
+  const markAdminChange = () => {
+    setAdminDirtyVersion((version) => version + 1);
+  };
 
   useEffect(() => {
     LEGACY_STORAGE_KEYS.forEach((key) => window.localStorage.removeItem(key));
@@ -162,39 +183,21 @@ export default function App() {
     let active = true;
     fetchRemoteCatalog()
       .then((catalog) => {
-        if (!active || !catalog) return;
-        if (Array.isArray(catalog.productos) && catalog.productos.length) {
-          setProductos(catalog.productos.map(normalizeProduct));
-        }
-        if (Array.isArray(catalog.categorias) && catalog.categorias.length) {
-          setCategorias(normalizeCategories(catalog.categorias));
-        }
+        if (!active) return;
+        applyRemoteCatalog(catalog);
+        setRemoteSaveEnabled(true);
       })
-      .catch(() => {})
+      .catch(() => {
+        if (active) setRemoteSaveEnabled(false);
+      })
       .finally(() => {
-        if (active) setRemoteBootstrapped(true);
+        if (active) setRemoteChecked(true);
       });
 
     return () => {
       active = false;
     };
-  }, []);
-
-  useEffect(() => {
-    if (!adminToken || !remoteBootstrapped) return undefined;
-
-    window.clearTimeout(saveTimer.current);
-    saveTimer.current = window.setTimeout(() => {
-      saveRemoteCatalog({ productos, categorias }, adminToken).catch((error) => {
-        if (error.status === 401) {
-          window.localStorage.removeItem(ADMIN_TOKEN_STORAGE_KEY);
-          setAdminToken('');
-        }
-      });
-    }, 650);
-
-    return () => window.clearTimeout(saveTimer.current);
-  }, [adminToken, categorias, productos, remoteBootstrapped]);
+  }, [applyRemoteCatalog]);
 
   useEffect(() => {
     window.localStorage.setItem(PRODUCT_STORAGE_KEY, JSON.stringify(productos));
@@ -236,22 +239,42 @@ export default function App() {
     return [...byName.values()];
   }, [categorias, productos]);
 
+  useEffect(() => {
+    if (!adminToken || !remoteSaveEnabled || adminDirtyVersion === 0) return undefined;
+
+    window.clearTimeout(saveTimer.current);
+    saveTimer.current = window.setTimeout(() => {
+      saveRemoteCatalog({ productos, categorias: categoriasCatalogo }, adminToken).catch((error) => {
+        if (error.status === 401) {
+          window.localStorage.removeItem(ADMIN_TOKEN_STORAGE_KEY);
+          setAdminToken('');
+          notify('Sesion expirada. Vuelve a entrar al administrador.');
+          return;
+        }
+
+        notify(error.message || 'No se pudo guardar en la nube. Revisa Neon o Vercel.');
+      });
+    }, 650);
+
+    return () => window.clearTimeout(saveTimer.current);
+  }, [adminDirtyVersion, adminToken, categoriasCatalogo, notify, productos, remoteSaveEnabled]);
+
   const segmentosDisponibles = useMemo(() => {
     if (filtroCategoria === 'Todos') return [];
     const category = categoriasCatalogo.find((item) => item.nombre === filtroCategoria);
     return category ? ['Todos', ...category.subcategorias] : ['Todos'];
   }, [categoriasCatalogo, filtroCategoria]);
 
-  const notify = (text) => {
-    setToast(text);
-    window.setTimeout(() => setToast(''), 2400);
-  };
-
   const handleAdminLogin = async (password) => {
     const token = await loginAdmin(password);
+    if (!isLocalHost() && !remoteSaveEnabled) {
+      const catalog = await fetchRemoteCatalog();
+      applyRemoteCatalog(catalog);
+      setRemoteSaveEnabled(true);
+      setRemoteChecked(true);
+    }
     window.localStorage.setItem(ADMIN_TOKEN_STORAGE_KEY, token);
     setAdminToken(token);
-    await saveRemoteCatalog({ productos, categorias }, token).catch(() => {});
   };
 
   const handleAdminLogout = () => {
@@ -261,24 +284,29 @@ export default function App() {
 
   const handleAddProduct = (product) => {
     setProductos((current) => [{ id: Date.now(), ...normalizeProduct(product) }, ...current]);
+    markAdminChange();
   };
 
   const handleDeleteProduct = (id) => {
     setProductos((current) => current.filter((product) => product.id !== id));
+    markAdminChange();
   };
 
   const handleUpdateProduct = (updatedProduct) => {
     setProductos((current) => current.map((product) => (
       product.id === updatedProduct.id ? normalizeProduct(updatedProduct) : product
     )));
+    markAdminChange();
   };
 
   const handleImportProducts = (importedProducts) => {
     setProductos(importedProducts.map(normalizeProduct));
+    markAdminChange();
   };
 
   const handleImportCategories = (importedCategories) => {
     setCategorias(normalizeCategories(importedCategories));
+    markAdminChange();
   };
 
   const handleResetProducts = () => {
@@ -288,6 +316,7 @@ export default function App() {
     setFiltroSegmento('Todos');
     setBusqueda('');
     setConsulta([]);
+    markAdminChange();
   };
 
   const handleCategoryFilter = (category) => {
@@ -308,6 +337,7 @@ export default function App() {
           : item
       ));
     });
+    markAdminChange();
   };
 
   const handleUpdateCategory = (updatedCategory) => {
@@ -324,10 +354,12 @@ export default function App() {
         category.nombre === updatedCategory.nombre ? { ...category, ...cleanCategory } : category
       ));
     });
+    markAdminChange();
   };
 
   const handleDeleteCategory = (categoryName) => {
     setCategorias((current) => current.filter((category) => category.nombre !== categoryName));
+    markAdminChange();
   };
 
   const addToConsulta = (product, quantity = 1, openDrawer = false) => {
@@ -389,11 +421,14 @@ export default function App() {
   const consultaCount = consulta.reduce((total, item) => total + item.quantity, 0);
 
   if (view === 'admin') {
-    if (!isLocalHost() && !adminToken) {
+    const adminCloudBlocked = !isLocalHost() && remoteChecked && !remoteSaveEnabled;
+
+    if (!isLocalHost() && (!adminToken || !remoteSaveEnabled)) {
       return (
         <>
           <div className="site-bg" />
           <AdminLogin
+            notice={adminCloudBlocked ? 'No se pudo conectar con Neon. Revisa /api/health antes de editar.' : ''}
             onLogin={handleAdminLogin}
             onBack={() => { window.location.hash = ''; }}
           />

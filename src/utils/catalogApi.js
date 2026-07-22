@@ -16,7 +16,12 @@ export function isLocalHost() {
 export async function fetchRemoteCatalog() {
   const response = await fetch('/api/catalog', { cache: 'no-store' });
   const payload = await readJson(response);
-  if (!response.ok || payload.empty) return null;
+  if (!response.ok) {
+    const error = new Error(payload.error || 'No se pudo cargar el catalogo remoto');
+    error.status = response.status;
+    throw error;
+  }
+  if (payload.empty) return null;
   return payload;
 }
 

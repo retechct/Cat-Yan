@@ -12,6 +12,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "seed:neon": "node scripts/seed-neon.js",
+    "validate:catalog": "node scripts/validate-catalog.js",
     "images:webp": "node scripts/convert-product-images-to-webp.js"
   },
   "browserslist": {

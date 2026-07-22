@@ -26,6 +26,11 @@ module.exports = async function handler(req, res) {
 
   const body = await readJsonBody(req);
   const folder = String(body.folder || defaultFolder).replace(/^\/+|\/+$/g, '');
+  if (!/^[a-z0-9_/-]{1,120}$/i.test(folder)) {
+    json(res, 400, { error: 'Carpeta de Cloudinary invalida' });
+    return;
+  }
+
   const timestamp = Math.floor(Date.now() / 1000);
   const params = { folder, timestamp };
 
