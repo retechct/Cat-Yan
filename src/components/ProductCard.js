@@ -1,23 +1,32 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import ProductBottleSVG from './ProductBottleSVG';
 import { hasReferencePrice, productPriceBeforeLabel, productPriceLabel } from '../utils/pricing';
 import './ProductCard.css';
 
 function getCardImageSrc(image) {
-  if (!image || !image.includes('/assets/productos/') || !image.endsWith('/tarjeta-cuadrada.webp')) {
+  if (!image || !image.includes('/assets/productos/') || !image.endsWith('.webp')) {
     return image;
   }
 
-  return image.replace('/tarjeta-cuadrada.webp', '/tarjeta-thumb.webp');
+  if (/\/tarjeta-cuadrada.*\.webp$/.test(image)) {
+    return image.replace(/\.webp$/, '-thumb.webp');
+  }
+
+  return image;
 }
 
 export default function ProductCard({ producto, index, onViewProduct, onAddToConsulta }) {
   const agotado = producto.stock === 0;
   const bajoStock = producto.stock > 0 && producto.stock <= 3;
   const image = Array.isArray(producto.imagenes) && producto.imagenes.length ? producto.imagenes[0] : producto.imagen;
-  const cardImage = getCardImageSrc(image);
-  const hasThumb = Boolean(cardImage && cardImage !== image);
+  const optimizedImage = getCardImageSrc(image);
+  const [useOriginalImage, setUseOriginalImage] = useState(false);
+  const cardImage = useOriginalImage ? image : optimizedImage;
   const hasPrice = hasReferencePrice(producto);
+
+  useEffect(() => {
+    setUseOriginalImage(false);
+  }, [image]);
 
   return (
     <article className="card" style={{ '--accent': producto.color, animationDelay: `${index * 70}ms` }}>
@@ -28,12 +37,11 @@ export default function ProductCard({ producto, index, onViewProduct, onAddToCon
           <img
             className="product-photo"
             src={cardImage}
-            srcSet={hasThumb ? `${cardImage} 520w, ${image} 1254w` : undefined}
-            sizes="(max-width: 620px) 46vw, (max-width: 920px) 45vw, 31vw"
             alt={producto.nombre}
             loading="lazy"
             decoding="async"
             fetchPriority={index < 4 ? 'auto' : 'low'}
+            onError={cardImage !== image ? () => setUseOriginalImage(true) : undefined}
           />
         ) : (
           <ProductBottleSVG producto={producto} />

@@ -10,6 +10,18 @@ function getHeroImage(producto, mode = 'main') {
   return images[0] || producto.imagen;
 }
 
+function getFastHeroImage(image) {
+  if (!image || !image.includes('/assets/productos/') || !image.endsWith('.webp')) {
+    return image;
+  }
+
+  if (/\/(premium-portada|tarjeta-cuadrada).*\.webp$/.test(image)) {
+    return image.replace(/\.webp$/, '-thumb.webp');
+  }
+
+  return image;
+}
+
 function ProductVisual({
   producto,
   className,
@@ -18,16 +30,25 @@ function ProductVisual({
   fetchPriority = 'auto',
 }) {
   const image = getHeroImage(producto, mode);
+  const optimizedImage = getFastHeroImage(image);
+  const [useOriginalImage, setUseOriginalImage] = useState(false);
 
-  if (image) {
+  useEffect(() => {
+    setUseOriginalImage(false);
+  }, [image]);
+
+  const displayImage = useOriginalImage ? image : optimizedImage;
+
+  if (displayImage) {
     return (
       <img
         className={className}
-        src={image}
+        src={displayImage}
         alt={producto.nombre}
         loading={loading}
         decoding="async"
         fetchPriority={fetchPriority}
+        onError={displayImage !== image ? () => setUseOriginalImage(true) : undefined}
       />
     );
   }
