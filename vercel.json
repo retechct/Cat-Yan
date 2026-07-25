@@ -1,5 +1,16 @@
 {
   "framework": "create-react-app",
   "buildCommand": "npm run build",
-  "outputDirectory": "build"
+  "outputDirectory": "build",
+  "headers": [
+    {
+      "source": "/assets/productos/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400, stale-while-revalidate=604800"
+        }
+      ]
+    }
+  ]
 }

@@ -3,10 +3,20 @@ import ProductBottleSVG from './ProductBottleSVG';
 import { hasReferencePrice, productPriceBeforeLabel, productPriceLabel } from '../utils/pricing';
 import './ProductCard.css';
 
+function getCardImageSrc(image) {
+  if (!image || !image.includes('/assets/productos/') || !image.endsWith('/tarjeta-cuadrada.webp')) {
+    return image;
+  }
+
+  return image.replace('/tarjeta-cuadrada.webp', '/tarjeta-thumb.webp');
+}
+
 export default function ProductCard({ producto, index, onViewProduct, onAddToConsulta }) {
   const agotado = producto.stock === 0;
   const bajoStock = producto.stock > 0 && producto.stock <= 3;
   const image = Array.isArray(producto.imagenes) && producto.imagenes.length ? producto.imagenes[0] : producto.imagen;
+  const cardImage = getCardImageSrc(image);
+  const hasThumb = Boolean(cardImage && cardImage !== image);
   const hasPrice = hasReferencePrice(producto);
 
   return (
@@ -15,7 +25,16 @@ export default function ProductCard({ producto, index, onViewProduct, onAddToCon
         <span className="card-category">{producto.categoria}</span>
         {producto.segmento && <span className="card-segment">{producto.segmento}</span>}
         {image ? (
-          <img className="product-photo" src={image} alt={producto.nombre} loading="lazy" />
+          <img
+            className="product-photo"
+            src={cardImage}
+            srcSet={hasThumb ? `${cardImage} 520w, ${image} 1254w` : undefined}
+            sizes="(max-width: 620px) 46vw, (max-width: 920px) 45vw, 31vw"
+            alt={producto.nombre}
+            loading="lazy"
+            decoding="async"
+            fetchPriority={index < 4 ? 'auto' : 'low'}
+          />
         ) : (
           <ProductBottleSVG producto={producto} />
         )}

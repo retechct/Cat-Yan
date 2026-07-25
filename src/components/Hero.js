@@ -10,17 +10,50 @@ function getHeroImage(producto, mode = 'main') {
   return images[0] || producto.imagen;
 }
 
-function ProductVisual({ producto, className, mode = 'main' }) {
+function ProductVisual({
+  producto,
+  className,
+  mode = 'main',
+  loading = 'lazy',
+  fetchPriority = 'auto',
+}) {
   const image = getHeroImage(producto, mode);
 
   if (image) {
-    return <img className={className} src={image} alt={producto.nombre} />;
+    return (
+      <img
+        className={className}
+        src={image}
+        alt={producto.nombre}
+        loading={loading}
+        decoding="async"
+        fetchPriority={fetchPriority}
+      />
+    );
   }
 
   return <ProductBottleSVG producto={producto} />;
 }
 
+function useMediaQuery(query) {
+  const [matches, setMatches] = useState(() => (
+    typeof window !== 'undefined' && window.matchMedia(query).matches
+  ));
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return undefined;
+    const media = window.matchMedia(query);
+    const handleChange = () => setMatches(media.matches);
+    handleChange();
+    media.addEventListener('change', handleChange);
+    return () => media.removeEventListener('change', handleChange);
+  }, [query]);
+
+  return matches;
+}
+
 export default function Hero({ productos, onAddToConsulta, onViewProduct }) {
+  const isCompact = useMediaQuery('(max-width: 620px)');
   const destacados = useMemo(() => {
     const activos = productos.filter((item) => item.activo !== false && item.stock > 0);
     const elegidos = activos.filter((item) => item.destacado);
@@ -77,12 +110,16 @@ export default function Hero({ productos, onAddToConsulta, onViewProduct }) {
         <div className="hero-wordmark" aria-hidden="true">BEAULYX</div>
         <div className="hero-ribbon" key={`ribbon-${transitionKey}`} aria-hidden="true" />
 
-        <div className="hero-side-bottle hero-side-left" key={`left-${previousProduct.id}-${transitionKey}`} aria-hidden="true">
-          <ProductVisual producto={previousProduct} className="hero-photo" mode="side" />
-        </div>
-        <div className="hero-side-bottle hero-side-right" key={`right-${nextProduct.id}-${transitionKey}`} aria-hidden="true">
-          <ProductVisual producto={nextProduct} className="hero-photo" mode="side" />
-        </div>
+        {!isCompact && (
+          <>
+            <div className="hero-side-bottle hero-side-left" key={`left-${previousProduct.id}-${transitionKey}`} aria-hidden="true">
+              <ProductVisual producto={previousProduct} className="hero-photo" mode="side" fetchPriority="low" />
+            </div>
+            <div className="hero-side-bottle hero-side-right" key={`right-${nextProduct.id}-${transitionKey}`} aria-hidden="true">
+              <ProductVisual producto={nextProduct} className="hero-photo" mode="side" fetchPriority="low" />
+            </div>
+          </>
+        )}
 
         <button className="hero-arrow hero-arrow-left" type="button" onClick={() => goTo(-1)} aria-label="Producto anterior">
           <span>&lt;</span>
@@ -92,7 +129,7 @@ export default function Hero({ productos, onAddToConsulta, onViewProduct }) {
         </button>
 
         <button className="hero-product" key={`${producto.id}-${transitionKey}`} type="button" onClick={() => onViewProduct(producto)}>
-          <ProductVisual producto={producto} className="hero-photo" />
+          <ProductVisual producto={producto} className="hero-photo" loading="eager" fetchPriority="high" />
         </button>
 
         <aside className="hero-info-card" key={`info-${producto.id}-${transitionKey}`}>
