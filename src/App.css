@@ -191,7 +191,8 @@
   }
 
   .grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
   }
 
   .catalog-toolbar {
@@ -210,5 +211,15 @@
     right: 12px;
     bottom: 12px;
     max-width: calc(100% - 24px);
+  }
+}
+
+@media (max-width: 360px) {
+  .main {
+    width: min(100% - 18px, 1180px);
+  }
+
+  .grid {
+    gap: 10px;
   }
 }

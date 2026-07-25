@@ -221,19 +221,111 @@
 }
 
 @media (max-width: 620px) {
+  .card {
+    box-shadow: 0 10px 28px rgba(77, 48, 42, 0.08);
+  }
+
   .card-media {
-    min-height: 250px;
+    min-height: 0;
+    aspect-ratio: 1 / 1.08;
+  }
+
+  .product-photo {
+    height: 100%;
+    padding: 14px;
+  }
+
+  .card-category,
+  .card-segment {
+    max-width: calc(100% - 18px);
+    padding: 5px 7px;
+    overflow: hidden;
+    font-size: 8px;
+    letter-spacing: 0.06em;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .card-category {
+    top: 9px;
+    left: 9px;
+  }
+
+  .card-segment {
+    right: 9px;
+    bottom: 9px;
+  }
+
+  .card-body {
+    gap: 9px;
+    padding: 12px;
   }
 
   .card-heading {
     flex-direction: column;
+    gap: 8px;
+  }
+
+  .card-volume {
+    margin-bottom: 4px;
+    font-size: 9px;
+    letter-spacing: 0.08em;
+  }
+
+  .card-heading h2 {
+    display: -webkit-box;
+    overflow: hidden;
+    font-size: 22px;
+    line-height: 1.02;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
   }
 
   .card-price {
     justify-items: start;
+    font-size: 12px;
+  }
+
+  .card-price del {
+    font-size: 10px;
+  }
+
+  .card-price small {
+    display: none;
+  }
+
+  .card-description,
+  .card-notes,
+  .card-stock {
+    display: none;
   }
 
   .card-actions {
     grid-template-columns: 1fr;
+    gap: 7px;
+  }
+
+  .card-action,
+  .card-view {
+    min-height: 38px;
+    padding: 0 10px;
+    font-size: 10px;
+    letter-spacing: 0.02em;
+  }
+}
+
+@media (max-width: 360px) {
+  .card-body {
+    padding: 10px;
+  }
+
+  .card-heading h2 {
+    font-size: 20px;
+  }
+
+  .card-action,
+  .card-view {
+    min-height: 36px;
+    font-size: 9px;
   }
 }
