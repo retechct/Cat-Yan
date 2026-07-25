@@ -100,6 +100,56 @@
   gap: 18px;
 }
 
+.catalog-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin: 30px 0 4px;
+}
+
+.catalog-pagination button,
+.catalog-pagination span {
+  min-width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.catalog-pagination button {
+  border: 1px solid rgba(33, 23, 22, 0.14);
+  color: var(--ink);
+  background: rgba(255, 253, 248, 0.78);
+  transition: transform 180ms ease, background 180ms ease, color 180ms ease, border-color 180ms ease;
+}
+
+.catalog-pagination button:hover:not(:disabled),
+.catalog-pagination button.active {
+  color: #fff;
+  border-color: var(--ink);
+  background: var(--ink);
+  transform: translateY(-1px);
+}
+
+.catalog-pagination button.active {
+  background: linear-gradient(135deg, #efd499, #d8b46a 58%, #b98943);
+  border-color: #d8b46a;
+  color: #141018;
+}
+
+.catalog-pagination button:disabled {
+  cursor: not-allowed;
+  opacity: 0.38;
+}
+
+.catalog-pagination span {
+  color: var(--muted);
+}
+
 .empty-state {
   min-height: 260px;
   display: grid;
@@ -205,6 +255,18 @@
 
   .catalog-filters button {
     flex: 1 1 auto;
+  }
+
+  .catalog-pagination {
+    gap: 6px;
+    margin-top: 22px;
+  }
+
+  .catalog-pagination button,
+  .catalog-pagination span {
+    min-width: 34px;
+    height: 34px;
+    font-size: 12px;
   }
 
   .app-toast {

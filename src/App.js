@@ -21,6 +21,7 @@ const DATA_VERSION = 'v4-productos-webp';
 const PRODUCT_STORAGE_KEY = `beaulyx-products-${DATA_VERSION}`;
 const CATEGORY_STORAGE_KEY = `beaulyx-categories-${DATA_VERSION}`;
 const CONSULTA_STORAGE_KEY = `beaulyx-consulta-${DATA_VERSION}`;
+const PRODUCTS_PER_PAGE = 12;
 const LEGACY_STORAGE_KEYS = [
   'beaulyx-products',
   'beaulyx-categories',
@@ -139,12 +140,32 @@ function getViewFromHash() {
   return window.location.hash === '#admin' ? 'admin' : 'catalog';
 }
 
+function getPaginationItems(currentPage, totalPages) {
+  const pages = new Set([1, totalPages]);
+
+  for (let page = currentPage - 1; page <= currentPage + 1; page += 1) {
+    if (page > 1 && page < totalPages) pages.add(page);
+  }
+
+  const sorted = [...pages].filter((page) => page >= 1 && page <= totalPages).sort((a, b) => a - b);
+  const items = [];
+
+  sorted.forEach((page, index) => {
+    const previous = sorted[index - 1];
+    if (previous && page - previous > 1) items.push(`ellipsis-${previous}-${page}`);
+    items.push(page);
+  });
+
+  return items;
+}
+
 export default function App() {
   const [productos, setProductos] = useState(loadProducts);
   const [categorias, setCategorias] = useState(loadCategories);
   const [filtroCategoria, setFiltroCategoria] = useState('Todos');
   const [filtroSegmento, setFiltroSegmento] = useState('Todos');
   const [busqueda, setBusqueda] = useState('');
+  const [paginaActual, setPaginaActual] = useState(1);
   const [view, setView] = useState(getViewFromHash);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [consulta, setConsulta] = useState(loadConsulta);
@@ -418,6 +439,29 @@ export default function App() {
     });
   }, [busqueda, filtroCategoria, filtroSegmento, productos]);
 
+  const totalPaginas = Math.max(1, Math.ceil(productosFiltrados.length / PRODUCTS_PER_PAGE));
+  const productosPaginados = useMemo(() => {
+    const start = (paginaActual - 1) * PRODUCTS_PER_PAGE;
+    return productosFiltrados.slice(start, start + PRODUCTS_PER_PAGE);
+  }, [paginaActual, productosFiltrados]);
+  const paginationItems = useMemo(() => getPaginationItems(paginaActual, totalPaginas), [paginaActual, totalPaginas]);
+
+  useEffect(() => {
+    setPaginaActual(1);
+  }, [busqueda, filtroCategoria, filtroSegmento]);
+
+  useEffect(() => {
+    setPaginaActual((page) => Math.min(page, totalPaginas));
+  }, [totalPaginas]);
+
+  const handlePageChange = (page) => {
+    if (page < 1 || page > totalPaginas || page === paginaActual) return;
+    setPaginaActual(page);
+    window.setTimeout(() => {
+      document.getElementById('catalogo')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 0);
+  };
+
   const consultaCount = consulta.reduce((total, item) => total + item.quantity, 0);
 
   if (view === 'admin') {
@@ -517,17 +561,57 @@ export default function App() {
         </section>
 
         {productosFiltrados.length > 0 ? (
-          <section className="grid" aria-label="Lista de productos">
-            {productosFiltrados.map((producto, index) => (
-              <ProductCard
-                key={producto.id}
-                producto={producto}
-                index={index}
-                onViewProduct={setSelectedProduct}
-                onAddToConsulta={(product) => addToConsulta(product, 1)}
-              />
-            ))}
-          </section>
+          <>
+            <section className="grid" aria-label="Lista de productos">
+              {productosPaginados.map((producto, index) => (
+                <ProductCard
+                  key={producto.id}
+                  producto={producto}
+                  index={index}
+                  onViewProduct={setSelectedProduct}
+                  onAddToConsulta={(product) => addToConsulta(product, 1)}
+                />
+              ))}
+            </section>
+
+            {totalPaginas > 1 && (
+              <nav className="catalog-pagination" aria-label="Paginacion del catalogo">
+                <button
+                  type="button"
+                  className="pagination-arrow"
+                  onClick={() => handlePageChange(paginaActual - 1)}
+                  disabled={paginaActual === 1}
+                  aria-label="Pagina anterior"
+                >
+                  &lt;
+                </button>
+                {paginationItems.map((item) => (
+                  typeof item === 'number' ? (
+                    <button
+                      key={item}
+                      type="button"
+                      className={item === paginaActual ? 'active' : ''}
+                      onClick={() => handlePageChange(item)}
+                      aria-current={item === paginaActual ? 'page' : undefined}
+                    >
+                      {item}
+                    </button>
+                  ) : (
+                    <span key={item} aria-hidden="true">...</span>
+                  )
+                ))}
+                <button
+                  type="button"
+                  className="pagination-arrow"
+                  onClick={() => handlePageChange(paginaActual + 1)}
+                  disabled={paginaActual === totalPaginas}
+                  aria-label="Pagina siguiente"
+                >
+                  &gt;
+                </button>
+              </nav>
+            )}
+          </>
         ) : (
           <section className="empty-state">
             <h3>No encontramos ese producto.</h3>
