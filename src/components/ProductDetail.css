@@ -68,13 +68,34 @@
 }
 
 .detail-thumbs button {
+  position: relative;
   width: 76px;
   aspect-ratio: 1;
   border: 1px solid transparent;
   border-radius: 4px;
   padding: 6px;
   background: #f5f1eb;
+  overflow: hidden;
   transition: border-color 160ms ease, transform 160ms ease;
+}
+
+.detail-thumbs button::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.9;
+  background:
+    linear-gradient(110deg, transparent 0 32%, rgba(255, 255, 255, 0.7) 45%, transparent 58%),
+    linear-gradient(145deg, rgba(255, 250, 245, 0.34), rgba(216, 180, 106, 0.12));
+  transform: translateX(-72%);
+  animation: detailImageShimmer 1300ms ease-in-out infinite;
+}
+
+.detail-thumbs button:has(.detail-thumb-image.is-loaded)::after {
+  opacity: 0;
+  animation: none;
 }
 
 .detail-thumbs button:hover,
@@ -88,12 +109,21 @@
 }
 
 .detail-thumb-image {
+  position: relative;
+  z-index: 1;
   width: 100%;
   height: 100%;
   object-fit: contain;
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+
+.detail-thumb-image.is-loaded {
+  opacity: 1;
 }
 
 .detail-stage {
+  position: relative;
   min-height: 560px;
   display: grid;
   place-items: center;
@@ -102,6 +132,34 @@
   background:
     linear-gradient(135deg, rgba(255, 255, 255, 0.82), rgba(244, 233, 220, 0.48)),
     linear-gradient(0deg, rgba(100, 121, 111, 0.09), rgba(183, 110, 121, 0.06));
+  overflow: hidden;
+}
+
+.detail-stage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+  background:
+    linear-gradient(110deg, transparent 0 34%, rgba(255, 255, 255, 0.62) 46%, transparent 60%),
+    radial-gradient(circle at 50% 48%, rgba(216, 180, 106, 0.16), transparent 42%);
+  transform: translateX(-72%);
+}
+
+.detail-stage.is-loading::after {
+  opacity: 1;
+  animation: detailImageShimmer 1300ms ease-in-out infinite;
+}
+
+@keyframes detailImageShimmer {
+  to { transform: translateX(72%); }
+}
+
+.detail-stage > * {
+  position: relative;
+  z-index: 1;
 }
 
 .detail-stage .bottle-svg {
@@ -113,6 +171,12 @@
   height: 520px;
   object-fit: contain;
   padding: 18px;
+  opacity: 0;
+  transition: opacity 220ms ease;
+}
+
+.detail-main-image.is-loaded {
+  opacity: 1;
 }
 
 .detail-info {

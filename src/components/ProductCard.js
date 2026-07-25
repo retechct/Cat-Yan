@@ -1,47 +1,49 @@
 import React, { useEffect, useState } from 'react';
 import ProductBottleSVG from './ProductBottleSVG';
+import { getProductThumbImage } from '../utils/images';
 import { hasReferencePrice, productPriceBeforeLabel, productPriceLabel } from '../utils/pricing';
 import './ProductCard.css';
-
-function getCardImageSrc(image) {
-  if (!image || !image.includes('/assets/productos/') || !image.endsWith('.webp')) {
-    return image;
-  }
-
-  if (/\/tarjeta-cuadrada.*\.webp$/.test(image)) {
-    return image.replace(/\.webp$/, '-thumb.webp');
-  }
-
-  return image;
-}
 
 export default function ProductCard({ producto, index, onViewProduct, onAddToConsulta }) {
   const agotado = producto.stock === 0;
   const bajoStock = producto.stock > 0 && producto.stock <= 3;
   const image = Array.isArray(producto.imagenes) && producto.imagenes.length ? producto.imagenes[0] : producto.imagen;
-  const optimizedImage = getCardImageSrc(image);
+  const optimizedImage = getProductThumbImage(image);
   const [useOriginalImage, setUseOriginalImage] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
   const cardImage = useOriginalImage ? image : optimizedImage;
   const hasPrice = hasReferencePrice(producto);
 
   useEffect(() => {
     setUseOriginalImage(false);
+    setImageLoaded(false);
   }, [image]);
+
+  const handleImageError = () => {
+    if (cardImage !== image) {
+      setImageLoaded(false);
+      setUseOriginalImage(true);
+      return;
+    }
+
+    setImageLoaded(true);
+  };
 
   return (
     <article className="card" style={{ '--accent': producto.color, animationDelay: `${index * 70}ms` }}>
-      <button className="card-media" type="button" onClick={() => onViewProduct(producto)}>
+      <button className={`card-media ${imageLoaded || !image ? 'is-loaded' : 'is-loading'}`} type="button" onClick={() => onViewProduct(producto)}>
         <span className="card-category">{producto.categoria}</span>
         {producto.segmento && <span className="card-segment">{producto.segmento}</span>}
         {image ? (
           <img
-            className="product-photo"
+            className={`product-photo ${imageLoaded ? 'is-loaded' : 'is-loading'}`}
             src={cardImage}
             alt={producto.nombre}
             loading="lazy"
             decoding="async"
             fetchPriority={index < 4 ? 'auto' : 'low'}
-            onError={cardImage !== image ? () => setUseOriginalImage(true) : undefined}
+            onLoad={() => setImageLoaded(true)}
+            onError={handleImageError}
           />
         ) : (
           <ProductBottleSVG producto={producto} />

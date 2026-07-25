@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import ProductBottleSVG from './ProductBottleSVG';
+import { getProductThumbImage } from '../utils/images';
 import { productPriceLabel } from '../utils/pricing';
 import './Hero.css';
 
@@ -10,18 +11,6 @@ function getHeroImage(producto, mode = 'main') {
   return images[0] || producto.imagen;
 }
 
-function getFastHeroImage(image) {
-  if (!image || !image.includes('/assets/productos/') || !image.endsWith('.webp')) {
-    return image;
-  }
-
-  if (/\/(premium-portada|tarjeta-cuadrada).*\.webp$/.test(image)) {
-    return image.replace(/\.webp$/, '-thumb.webp');
-  }
-
-  return image;
-}
-
 function ProductVisual({
   producto,
   className,
@@ -30,7 +19,7 @@ function ProductVisual({
   fetchPriority = 'auto',
 }) {
   const image = getHeroImage(producto, mode);
-  const optimizedImage = getFastHeroImage(image);
+  const optimizedImage = getProductThumbImage(image);
   const [useOriginalImage, setUseOriginalImage] = useState(false);
 
   useEffect(() => {

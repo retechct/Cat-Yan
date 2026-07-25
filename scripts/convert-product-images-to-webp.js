@@ -7,6 +7,7 @@ const extensions = new Set(['.png', '.jpg', '.jpeg']);
 const thumbnailSpecs = [
   { pattern: /^premium-portada.*\.webp$/i, width: 620, quality: 80 },
   { pattern: /^tarjeta-cuadrada.*\.webp$/i, width: 420, quality: 78 },
+  { pattern: /^catalogo-limpio.*\.webp$/i, width: 520, quality: 80 },
 ];
 
 function walk(directory) {

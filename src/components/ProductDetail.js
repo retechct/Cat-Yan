@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import ProductBottleSVG from './ProductBottleSVG';
+import { getProductThumbImage } from '../utils/images';
 import { productPriceBeforeLabel, productPriceLabel } from '../utils/pricing';
 import './ProductDetail.css';
 
@@ -13,15 +14,64 @@ function getGallery(producto) {
   return images.length ? images.map((src, index) => ({ id: `${producto.id}-${index}`, src })) : [{ id: `${producto.id}-preview`, src: '' }];
 }
 
-function ProductVisual({ producto, src, className }) {
-  if (src) return <img className={className} src={src} alt={producto.nombre} />;
+function ProductVisual({
+  producto,
+  src,
+  optimizedSrc,
+  className,
+  loading = 'lazy',
+  fetchPriority = 'auto',
+  onLoad,
+}) {
+  const [useOriginalImage, setUseOriginalImage] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const displaySrc = useOriginalImage ? src : (optimizedSrc || src);
+
+  useEffect(() => {
+    setUseOriginalImage(false);
+    setImageLoaded(false);
+  }, [src, optimizedSrc]);
+
+  const handleLoad = () => {
+    setImageLoaded(true);
+    onLoad?.();
+  };
+
+  const handleError = () => {
+    if (displaySrc !== src) {
+      setUseOriginalImage(true);
+      setImageLoaded(false);
+      return;
+    }
+
+    setImageLoaded(true);
+    onLoad?.();
+  };
+
+  if (displaySrc) {
+    return (
+      <img
+        className={`${className} ${imageLoaded ? 'is-loaded' : 'is-loading'}`}
+        src={displaySrc}
+        alt={producto.nombre}
+        loading={loading}
+        decoding="async"
+        fetchPriority={fetchPriority}
+        onLoad={handleLoad}
+        onError={handleError}
+      />
+    );
+  }
+
   return <ProductBottleSVG producto={producto} />;
 }
 
 export default function ProductDetail({ producto, onClose, onAddToConsulta, onOpenConsulta }) {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
+  const [mainImageLoaded, setMainImageLoaded] = useState(false);
   const gallery = useMemo(() => getGallery(producto), [producto]);
+  const selectedImage = gallery[selectedIndex]?.src;
   const agotado = producto.stock === 0;
   const maxQuantity = Math.max(1, Number(producto.stock || 1));
 
@@ -29,6 +79,10 @@ export default function ProductDetail({ producto, onClose, onAddToConsulta, onOp
     setSelectedIndex(0);
     setQuantity(1);
   }, [producto.id]);
+
+  useEffect(() => {
+    setMainImageLoaded(false);
+  }, [selectedImage]);
 
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -72,13 +126,25 @@ export default function ProductDetail({ producto, onClose, onAddToConsulta, onOp
                 onClick={() => setSelectedIndex(index)}
                 aria-label={`Ver imagen ${index + 1} de ${producto.nombre}`}
               >
-                <ProductVisual producto={producto} src={item.src} className="detail-thumb-image" />
+                <ProductVisual
+                  producto={producto}
+                  src={item.src}
+                  optimizedSrc={getProductThumbImage(item.src)}
+                  className="detail-thumb-image"
+                />
               </button>
             ))}
           </aside>
 
-          <div className="detail-stage">
-            <ProductVisual producto={producto} src={gallery[selectedIndex]?.src} className="detail-main-image" />
+          <div className={`detail-stage ${mainImageLoaded || !selectedImage ? 'is-loaded' : 'is-loading'}`}>
+            <ProductVisual
+              producto={producto}
+              src={selectedImage}
+              className="detail-main-image"
+              loading="eager"
+              fetchPriority="high"
+              onLoad={() => setMainImageLoaded(true)}
+            />
           </div>
 
           <article className="detail-info">
