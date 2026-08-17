@@ -411,3 +411,30 @@
     background: #efd499;
   }
 }
+
+.whatsapp-flotante {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 50;
+  width: 56px;
+  height: 56px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #25d366;
+  color: white;
+  box-shadow: 0 8px 22px rgba(18, 140, 85, 0.32);
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.whatsapp-flotante:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 12px 28px rgba(18, 140, 85, 0.4);
+}
+
+.whatsapp-flotante svg {
+  width: 30px;
+  height: 30px;
+  stroke-width: 1.5;
+}
