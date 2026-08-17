@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './Header.css';
 
-const PHONE_URL = 'https://wa.me/51961678632?text=Hola,%20quiero%20asesoria%20sobre%20los%20productos%20disponibles.';
+const PHONE_URL = 'https://wa.me/961678632?text=Hola,%20quiero%20asesoria%20sobre%20los%20productos%20disponibles.';
 
 export default function Header({ busqueda, setBusqueda, consultaCount, onOpenConsulta }) {
   const [menuOpen, setMenuOpen] = useState(false);

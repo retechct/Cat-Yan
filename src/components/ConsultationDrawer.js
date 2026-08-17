@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { consultaPriceLine, hasReferencePrice, productPriceLabel } from '../utils/pricing';
 import './ConsultationDrawer.css';
 
-const PHONE = '51961678632';
+const PHONE = '961678632';
 
 function buildMessage(items) {
   const lines = items.map(({ product, quantity }) => (
