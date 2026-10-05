@@ -17,7 +17,7 @@ import {
 import './styles/global.css';
 import './App.css';
 
-const DATA_VERSION = 'v4-productos-webp';
+const DATA_VERSION = 'v5-botellas-perfumes';
 const PRODUCT_STORAGE_KEY = `beaulyx-products-${DATA_VERSION}`;
 const CATEGORY_STORAGE_KEY = `beaulyx-categories-${DATA_VERSION}`;
 const CONSULTA_STORAGE_KEY = `beaulyx-consulta-${DATA_VERSION}`;
@@ -32,8 +32,22 @@ const LEGACY_STORAGE_KEYS = [
   'beaulyx-products-v3-productos-reales',
   'beaulyx-categories-v3-productos-reales',
   'beaulyx-consulta-v3-productos-reales',
+  'beaulyx-products-v4-productos-webp',
+  'beaulyx-categories-v4-productos-webp',
+  'beaulyx-consulta-v4-productos-webp',
 ];
 const legacySegments = ['Mujer', 'Hombre', 'Unisex'];
+const productosBasePorId = new Map(productosBase.map((product) => [String(product.id), product]));
+
+function addBottleImage(product, categoria, images) {
+  if (categoria !== 'Perfumes') return images;
+
+  const baseProduct = productosBasePorId.get(String(product.id));
+  const bottleImage = baseProduct?.imagenes?.find((src) => src.endsWith('/botella.webp'));
+  if (!bottleImage || images.includes(bottleImage)) return images;
+
+  return [...images, bottleImage];
+}
 
 function slugify(text) {
   return text
@@ -75,11 +89,12 @@ function normalizeProduct(product) {
   const segmento = String(product.segmento || product.subcategoria || (legacyCategory ? product.categoria : 'General'));
   const precio = product.precio === '' || product.precio == null ? null : Number(product.precio);
   const precioAntes = product.precioAntes === '' || product.precioAntes == null ? null : Number(product.precioAntes);
-  const imagenes = Array.isArray(product.imagenes)
+  const productImages = Array.isArray(product.imagenes)
     ? product.imagenes.filter(Boolean)
     : product.imagen
       ? [product.imagen]
       : [];
+  const imagenes = addBottleImage(product, categoria, productImages);
 
   return {
     ...product,
