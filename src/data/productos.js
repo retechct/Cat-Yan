@@ -4,6 +4,11 @@ const imagenesProducto = (slug) => [
   `/assets/productos/${slug}/premium-portada.webp`,
 ];
 
+const imagenesPerfume = (slug) => [
+  ...imagenesProducto(slug),
+  `/assets/productos/${slug}/botella.webp`,
+];
+
 const productos = [
   {
     id: 1,
@@ -18,7 +23,7 @@ const productos = [
     descripcion: "Fragancia de empaque rojo profundo, elegante y con presencia. Ideal para consultar si buscas algo femenino, audaz y sofisticado.",
     notas: ["Intenso", "Elegante", "Noche"],
     color: "#9c182e",
-    imagenes: imagenesProducto("osadia-eau-de-parfum"),
+    imagenes: imagenesPerfume("osadia-eau-de-parfum"),
     destacado: true,
   },
   {
@@ -34,7 +39,7 @@ const productos = [
     descripcion: "Presentacion oscura con flores magenta, pensada para una presencia mas intensa y envolvente.",
     notas: ["Floral", "Elixir", "Intenso"],
     color: "#402032",
-    imagenes: imagenesProducto("gaia-elixir"),
+    imagenes: imagenesPerfume("gaia-elixir"),
     destacado: true,
   },
   {
@@ -50,7 +55,7 @@ const productos = [
     descripcion: "Eau de Toilette en empaque coral, con un estilo floral alegre y fresco para uso diario.",
     notas: ["Floral", "Coral", "Diario"],
     color: "#e3635e",
-    imagenes: imagenesProducto("a-la-vida"),
+    imagenes: imagenesPerfume("a-la-vida"),
     destacado: true,
   },
   {
@@ -66,7 +71,7 @@ const productos = [
     descripcion: "Parfum de empaque blanco con orquidea suave. Una opcion delicada, femenina y elegante.",
     notas: ["Floral", "Orquidea", "Suave"],
     color: "#b985b2",
-    imagenes: imagenesProducto("gaia-parfum"),
+    imagenes: imagenesPerfume("gaia-parfum"),
   },
   {
     id: 5,
@@ -81,7 +86,7 @@ const productos = [
     descripcion: "Eau de Toilette de empaque perlado con tipografia coral. Fresco, moderno y directo.",
     notas: ["Activo", "Moderno", "Fresco"],
     color: "#ef8c83",
-    imagenes: imagenesProducto("xiss-active"),
+    imagenes: imagenesPerfume("xiss-active"),
   },
   {
     id: 6,
@@ -96,7 +101,7 @@ const productos = [
     descripcion: "Parfum de empaque coral rojizo y acabado brillante, con una presencia femenina y viva.",
     notas: ["Vibrante", "Coral", "Parfum"],
     color: "#df4f4d",
-    imagenes: imagenesProducto("viva-liberatta"),
+    imagenes: imagenesPerfume("viva-liberatta"),
   },
   {
     id: 7,
@@ -111,7 +116,7 @@ const productos = [
     descripcion: "Parfum de empaque blanco minimalista, sobrio y delicado.",
     notas: ["Minimal", "Elegante", "Parfum"],
     color: "#d7d0c5",
-    imagenes: imagenesProducto("liberatta-parfum"),
+    imagenes: imagenesPerfume("liberatta-parfum"),
   },
   {
     id: 8,
@@ -310,7 +315,7 @@ const productos = [
     descripcion: "Fragancia femenina de empaque durazno con degradado luminoso, ideal para una consulta alegre y delicada.",
     notas: ["Dulce", "Luminoso", "Femenino"],
     color: "#f0a766",
-    imagenes: imagenesProducto("di-que-si"),
+    imagenes: imagenesPerfume("di-que-si"),
   },
   {
     id: 21,
@@ -325,7 +330,7 @@ const productos = [
     descripcion: "Perfume femenino en presentacion suave y romantica, pensado para una consulta elegante de uso diario.",
     notas: ["Romantico", "Suave", "Elegante"],
     color: "#d9a4a1",
-    imagenes: imagenesProducto("oh-la-la-eau-de-parfum"),
+    imagenes: imagenesPerfume("oh-la-la-eau-de-parfum"),
   },
   {
     id: 22,
@@ -340,7 +345,7 @@ const productos = [
     descripcion: "Fragancia Cielo en rosa con estilo femenino, fresco y luminoso para una consulta delicada.",
     notas: ["Floral", "Rosa", "Fresco"],
     color: "#d8adb5",
-    imagenes: imagenesProducto("cielo-en-rosa"),
+    imagenes: imagenesPerfume("cielo-en-rosa"),
   },
   {
     id: 23,
@@ -355,7 +360,7 @@ const productos = [
     descripcion: "Perfume Cielo de empaque turquesa, con presencia fresca y femenina para el dia a dia.",
     notas: ["Fresco", "Turquesa", "Diario"],
     color: "#79b9b0",
-    imagenes: imagenesProducto("cielo-eau-de-parfum"),
+    imagenes: imagenesPerfume("cielo-eau-de-parfum"),
   },
   {
     id: 24,
@@ -370,7 +375,7 @@ const productos = [
     descripcion: "Parfum Ccori de empaque dorado, elegante y sofisticado para consulta de fragancias con presencia.",
     notas: ["Dorado", "Parfum", "Elegante"],
     color: "#c4ad68",
-    imagenes: imagenesProducto("ccori-parfum"),
+    imagenes: imagenesPerfume("ccori-parfum"),
   },
   {
     id: 25,
@@ -385,7 +390,7 @@ const productos = [
     descripcion: "Temptation en presentacion clara, una opcion femenina y refinada para consulta personalizada.",
     notas: ["Femenino", "Refinado", "Temptation"],
     color: "#d2bea2",
-    imagenes: imagenesProducto("temptation-mujer-eau-de-parfum"),
+    imagenes: imagenesPerfume("temptation-mujer-eau-de-parfum"),
   },
   {
     id: 26,
@@ -400,7 +405,7 @@ const productos = [
     descripcion: "Temptation Mystic en empaque vino, con caracter profundo y elegante para una consulta mas intensa.",
     notas: ["Mystic", "Profundo", "Elegante"],
     color: "#5c1c2f",
-    imagenes: imagenesProducto("temptation-mystic-eau-de-parfum"),
+    imagenes: imagenesPerfume("temptation-mystic-eau-de-parfum"),
   },
   {
     id: 27,
@@ -415,7 +420,7 @@ const productos = [
     descripcion: "Temptation de empaque cobrizo, una alternativa masculina con presencia calida y moderna.",
     notas: ["Cobrizo", "Calido", "Moderno"],
     color: "#b8745d",
-    imagenes: imagenesProducto("temptation-eau-de-parfum"),
+    imagenes: imagenesPerfume("temptation-eau-de-parfum"),
   },
   {
     id: 28,
@@ -430,7 +435,7 @@ const productos = [
     descripcion: "Ccori Cristal en empaque rosado, delicado y luminoso para una consulta femenina sofisticada.",
     notas: ["Cristal", "Rosado", "Luminoso"],
     color: "#d9a2b1",
-    imagenes: imagenesProducto("ccori-cristal-parfum"),
+    imagenes: imagenesPerfume("ccori-cristal-parfum"),
   },
   {
     id: 29,
@@ -445,7 +450,7 @@ const productos = [
     descripcion: "Ccori Rubi de empaque rojo intenso, con una presencia elegante y llamativa.",
     notas: ["Rubi", "Intenso", "Parfum"],
     color: "#b51e43",
-    imagenes: imagenesProducto("ccori-rubi-parfum"),
+    imagenes: imagenesPerfume("ccori-rubi-parfum"),
   },
   {
     id: 30,
@@ -565,7 +570,7 @@ const productos = [
     descripcion: "Colonia Soy Unica con envase rosado y corazones, alegre y femenina para uso diario.",
     notas: ["Colonia", "Rosado", "Diario"],
     color: "#e54f93",
-    imagenes: imagenesProducto("soy-unica-colonia"),
+    imagenes: imagenesPerfume("soy-unica-colonia"),
   },
   {
     id: 38,
@@ -580,7 +585,7 @@ const productos = [
     descripcion: "Colonia Soy Sexy en tono rojo, con presencia femenina y llamativa para consulta.",
     notas: ["Colonia", "Rojo", "Femenino"],
     color: "#d73f57",
-    imagenes: imagenesProducto("soy-sexy-colonia"),
+    imagenes: imagenesPerfume("soy-sexy-colonia"),
   },
   {
     id: 39,
@@ -595,7 +600,7 @@ const productos = [
     descripcion: "Colonia Soy Glow con tono violeta, fresca y luminosa para una consulta juvenil.",
     notas: ["Colonia", "Glow", "Violeta"],
     color: "#9b78cf",
-    imagenes: imagenesProducto("soy-glow-colonia"),
+    imagenes: imagenesPerfume("soy-glow-colonia"),
   },
   {
     id: 40,
@@ -610,7 +615,7 @@ const productos = [
     descripcion: "Colonia Soy Poderosa de tono naranja, expresiva y moderna para uso diario.",
     notas: ["Colonia", "Poderosa", "Moderna"],
     color: "#e68c2e",
-    imagenes: imagenesProducto("soy-poderosa-colonia"),
+    imagenes: imagenesPerfume("soy-poderosa-colonia"),
   },
   {
     id: 41,
@@ -625,7 +630,7 @@ const productos = [
     descripcion: "Agua de Seda en presentacion dorada, suave y ligera para una consulta delicada.",
     notas: ["Colonia", "Suave", "Dorado"],
     color: "#d8b36d",
-    imagenes: imagenesProducto("agua-de-seda-colonia"),
+    imagenes: imagenesPerfume("agua-de-seda-colonia"),
   },
   {
     id: 42,
@@ -640,7 +645,7 @@ const productos = [
     descripcion: "Colonia L'Essence Violeta Salvaje, fresca y floral con tono violeta suave.",
     notas: ["Violeta", "Floral", "Fresco"],
     color: "#8c82cf",
-    imagenes: imagenesProducto("lessence-violeta-salvaje"),
+    imagenes: imagenesPerfume("lessence-violeta-salvaje"),
   },
   {
     id: 43,
@@ -655,7 +660,7 @@ const productos = [
     descripcion: "Colonia L'Essence Flor de Cerezo Silvestre, de estilo floral rosado y delicado.",
     notas: ["Cerezo", "Floral", "Rosado"],
     color: "#df8092",
-    imagenes: imagenesProducto("lessence-flor-de-cerezo-silvestre"),
+    imagenes: imagenesPerfume("lessence-flor-de-cerezo-silvestre"),
   },
   {
     id: 44,
@@ -670,7 +675,7 @@ const productos = [
     descripcion: "Colonia L'Essence Orquidea Exotica, floral y femenina con tono magenta.",
     notas: ["Orquidea", "Exotica", "Floral"],
     color: "#d35a9c",
-    imagenes: imagenesProducto("lessence-orquidea-exotica"),
+    imagenes: imagenesPerfume("lessence-orquidea-exotica"),
   },
   {
     id: 45,
@@ -685,7 +690,7 @@ const productos = [
     descripcion: "Colonia L'Essence Mimosa Radiante, luminosa y alegre con tono amarillo.",
     notas: ["Mimosa", "Radiante", "Colonia"],
     color: "#d7a533",
-    imagenes: imagenesProducto("lessence-mimosa-radiante"),
+    imagenes: imagenesPerfume("lessence-mimosa-radiante"),
   },
   {
     id: 46,
@@ -700,7 +705,7 @@ const productos = [
     descripcion: "Aires del Caribe en tono azul, fresca y ligera para una consulta de aromas diarios.",
     notas: ["Fresco", "Caribe", "Azul"],
     color: "#3089a6",
-    imagenes: imagenesProducto("aires-del-caribe"),
+    imagenes: imagenesPerfume("aires-del-caribe"),
   },
   {
     id: 47,
@@ -865,7 +870,7 @@ const productos = [
     descripcion: "Colonia Mix Chic Apple Tonic, fresca y juvenil con un perfil frutal.",
     notas: ["Apple", "Fresco", "Frutal"],
     color: "#83b96f",
-    imagenes: imagenesProducto("mix-chic-apple-tonic"),
+    imagenes: imagenesPerfume("mix-chic-apple-tonic"),
   },
 ];
 
